@@ -64,9 +64,12 @@ jobs:
             pytest tests/ > artifacts/${{ matrix.module }}/pytest_report.log 2>&1
             
           elif [ "${{ matrix.module }}" == "data_research" ]; then
+            python src/data_loader.py
             jupyter nbconvert --to html --execute notebooks/data_research.ipynb --output-dir artifacts/${{ matrix.module }}/
             
           elif [ "${{ matrix.module }}" == "visualization" ]; then
+            python src/data_loader.py
+            jupyter nbconvert --execute notebooks/data_research.ipynb
             jupyter nbconvert --to html --execute notebooks/visualization.ipynb --output-dir artifacts/${{ matrix.module }}/
           fi
 
