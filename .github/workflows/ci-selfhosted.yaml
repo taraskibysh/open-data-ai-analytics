@@ -11,27 +11,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-
-      - name: Install dependencies
+      - name: Setup environment, Run Analysis and Visualization
         run: |
+          echo "=== setup virtual environment ==="
+          python -m venv venv
+          source venv/bin/activate
+          
           python -m pip install --upgrade pip
-          pip install jupyter nbconvert ipykernel requests 
+          pip install jupyter nbconvert ipykernel requests pandas openpyxl scikit-learn matplotlib seaborn
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-
-      - name: Prepare Data (Local Run)
-        run: |
+          
           python src/data_loader.py
-
-      - name: Run Data Research (Local Run)
-        run: |
+          
           jupyter nbconvert --to notebook --execute --inplace notebooks/data_research.ipynb
-
-      - name: Run Visualization (Local Run)
-        run: |
+          
           mkdir -p artifacts/visualization
           jupyter nbconvert --to html --execute notebooks/visualization.ipynb --output-dir artifacts/visualization/
 
