@@ -4,3 +4,4 @@ seaborn
 jupyter
 scikit-learn
 wordcloud
+openpyxl
