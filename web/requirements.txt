@@ -1,0 +1,8 @@
+voila
+pandas
+ipywidgets
+jupyter
+nbconvert
+ipykernel
+matplotlib
+Pillow

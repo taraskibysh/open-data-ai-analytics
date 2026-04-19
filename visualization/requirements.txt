@@ -1,0 +1,11 @@
+pandas
+sqlalchemy
+pymysql
+cryptography
+jupyter
+nbconvert
+ipykernel
+matplotlib
+seaborn
+scikit-learn
+numpy

@@ -1,0 +1,9 @@
+pandas
+sqlalchemy
+pymysql
+cryptography
+jupyter
+nbconvert
+ipykernel
+scikit-learn
+numpy

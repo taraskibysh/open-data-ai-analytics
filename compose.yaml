@@ -1,0 +1,124 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: docflow_db
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - data_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 30s
+
+  data_load:
+    build:
+      context: ./data_load
+    container_name: docflow_data_load
+    env_file:
+      - .env
+    environment:
+      MYSQL_HOST: db
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - ./data:/data
+    networks:
+      - data_network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  data_quality_analysis:
+    build:
+      context: ./data_quality_analysis
+    container_name: docflow_data_quality
+    env_file:
+      - .env
+    environment:
+      MYSQL_HOST: db
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - ./reports:/shared/reports
+    networks:
+      - data_network
+    depends_on:
+      data_load:
+        condition: service_completed_successfully
+
+  data_research:
+    build:
+      context: ./data_research
+    container_name: docflow_data_research
+    env_file:
+      - .env
+    environment:
+      MYSQL_HOST: db
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - ./reports:/shared/reports
+    networks:
+      - data_network
+    depends_on:
+      data_load:
+        condition: service_completed_successfully
+
+  visualization:
+    build:
+      context: ./visualization
+    container_name: docflow_visualization
+    env_file:
+      - .env
+    environment:
+      MYSQL_HOST: db
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - ./plots:/shared/plots
+    networks:
+      - data_network
+    depends_on:
+      data_load:
+        condition: service_completed_successfully
+
+  web:
+    build:
+      context: ./web
+    container_name: docflow_web
+    ports:
+      - "8866:8866"
+    volumes:
+      - ./reports:/shared/reports
+      - ./plots:/shared/plots
+    networks:
+      - data_network
+    depends_on:
+      data_quality_analysis:
+        condition: service_completed_successfully
+      data_research:
+        condition: service_completed_successfully
+      visualization:
+        condition: service_completed_successfully
+
+networks:
+  data_network:
+    driver: bridge
+
+volumes:
+  db_data:
