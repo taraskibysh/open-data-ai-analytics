@@ -55,7 +55,7 @@ jobs:
         if: ${{ github.event_name != 'workflow_dispatch' || inputs.module == 'all' || inputs.module == matrix.module }}
         run: |
           mkdir -p artifacts/${{ matrix.module }}
-          echo "Запуск модуля: ${{ matrix.module }}"
+          echo "Running module: ${{ matrix.module }}"
 
           if [ "${{ matrix.module }}" == "data_loader" ]; then
             python src/data_loader.py > artifacts/${{ matrix.module }}/execution.log 2>&1
