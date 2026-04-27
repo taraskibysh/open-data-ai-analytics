@@ -7,13 +7,13 @@ variable "resource_group_name" {
 variable "location" {
   type        = string
   description = "Регіон Azure"
-  default     = "East US" # Або інший доступний вам регіон
+  default     = "East US"
 }
 
 variable "vm_size" {
   type        = string
   description = "Розмір віртуальної машини"
-  default     = "Standard_B2s" # B2s має достатньо RAM для Docker та БД
+  default     = "Standard_B2s"
 }
 
 variable "admin_username" {
