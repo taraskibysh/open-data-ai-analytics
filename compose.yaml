@@ -101,6 +101,7 @@ services:
     build:
       context: ./web
     container_name: docflow_web
+    restart: unless-stopped
     ports:
       - "8866:8866"
     volumes:
