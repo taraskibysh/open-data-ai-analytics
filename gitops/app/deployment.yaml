@@ -15,6 +15,20 @@ spec:
     spec:
       containers:
       - name: web
-        image: taraskibysh06/docflow-web:v1 # Вкажіть ваш реальний образ
+        image: taraskibysh06/docflow-web:v1
         ports:
-        - containerPort: 8866 # Змініть 80 на 8866, якщо ваш застосунок слухає цей порт
+        - containerPort: 8866
+        volumeMounts:
+        - name: reports-volume
+          mountPath: /shared/reports
+        - name: plots-volume
+          mountPath: /shared/plots
+      volumes:
+      - name: reports-volume
+        hostPath:
+          path: /opt/app/reports
+          type: DirectoryOrCreate
+      - name: plots-volume
+        hostPath:
+          path: /opt/app/plots
+          type: DirectoryOrCreate
