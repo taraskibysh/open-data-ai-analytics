@@ -22,3 +22,6 @@ runcmd:
 
   - cd /opt/app
   - docker compose up -d
+
+  - cd /opt/app/monitoring
+  - docker compose -f docker-compose.monitoring.yml up -d

@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: docflow-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/taraskibysh/open-data-ai-analytics'
+    targetRevision: main
+    path: gitops/app
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: docflow-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
