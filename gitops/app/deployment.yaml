@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docflow-web
+  namespace: docflow-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: docflow-web
+  template:
+    metadata:
+      labels:
+        app: docflow-web
+    spec:
+      containers:
+      - name: web
+        image: taraskibysh06/docflow-web:v1 # Вкажіть ваш реальний образ
+        ports:
+        - containerPort: 8866 # Змініть 80 на 8866, якщо ваш застосунок слухає цей порт
